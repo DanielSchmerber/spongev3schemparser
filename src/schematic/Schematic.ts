@@ -3,13 +3,19 @@ import nbt, {NBT} from "prismarine-nbt";
 import {readSchematic} from "./reader/spongeV3Schematicreader";
 
 export class SchematicWrapper{
+    private overrides: Map<string, Block>;
     constructor(private schem : Schem){
-
+        this.overrides = new Map()
     }
 
     getBlockAt(x:number,y:number,z:number){
-        return this.schem.getBlockAt(x,y,z)
+        return this.overrides.get(`${x},${y},${z}`)??this.schem.getBlockAt(x,y,z)
     }
+
+    setBlock(x: number,y:number,z:number,block:Block){
+        this.overrides.set(`${x},${y},${z}`,block)
+    }
+
     getWidth(){
         return this.schem.getWidth()
     }
