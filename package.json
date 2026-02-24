@@ -6,6 +6,9 @@
   "scripts": {
     "build": "tsc"
   },
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@types/node-zopfli": "^2.0.5",
