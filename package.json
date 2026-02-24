@@ -9,6 +9,13 @@
   "exports": {
     ".": "./dist/index.js"
   },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc"
+  },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@types/node-zopfli": "^2.0.5",

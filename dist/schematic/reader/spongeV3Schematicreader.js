@@ -1,0 +1,13 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.readSchematic = readSchematic;
+const Schematic_1 = require("../Schematic");
+const SpongeV3Schematic_1 = require("../SpongeV3Schematic");
+const prismarine_nbt_1 = __importDefault(require("prismarine-nbt"));
+async function readSchematic(schem) {
+    let parsed = (await prismarine_nbt_1.default.parse(schem)).parsed;
+    return new Schematic_1.SchematicWrapper(new SpongeV3Schematic_1.SchematicV3(parsed));
+}
