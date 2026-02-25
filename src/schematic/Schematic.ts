@@ -9,7 +9,7 @@ export class SchematicWrapper{
     }
 
     getBlockAt(x:number,y:number,z:number){
-        return this.overrides.get(`${x},${y},${z}`)??this.schem.getBlockAt(x,y,z)
+        return new BlockWrapper(this.overrides.get(`${x},${y},${z}`) ?? this.schem.getBlockAt(x,y,z))
     }
 
     setBlock(x: number,y:number,z:number,block:Block){
@@ -59,7 +59,7 @@ export class BlockWrapper{
 }
 
 export interface Schem{
-  getBlockAt(x:number,y:number,z:number): BlockWrapper
+  getBlockAt(x:number,y:number,z:number): Block
   getWidth():number
   getHeight():number
   getLength():number

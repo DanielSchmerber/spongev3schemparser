@@ -3,10 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NOTHING = exports.BlockWrapper = exports.SchematicWrapper = void 0;
-exports.iterateBlocks = iterateBlocks;
-exports.readSchematicFromBuf = readSchematicFromBuf;
-exports.blocksEqual = blocksEqual;
+exports.blocksEqual = exports.readSchematicFromBuf = exports.NOTHING = exports.iterateBlocks = exports.BlockWrapper = exports.SchematicWrapper = void 0;
 const prismarine_nbt_1 = __importDefault(require("prismarine-nbt"));
 const spongeV3Schematicreader_1 = require("./reader/spongeV3Schematicreader");
 class SchematicWrapper {
@@ -76,6 +73,7 @@ function* iterateBlocks(schem) {
         }
     }
 }
+exports.iterateBlocks = iterateBlocks;
 exports.NOTHING = {
     getMaterial() { return "nothing"; },
     getData() { return null; }
@@ -90,6 +88,8 @@ function readSchematicFromBuf(buf) {
         }
     }
 }
+exports.readSchematicFromBuf = readSchematicFromBuf;
 function blocksEqual(a, b) {
     return a.getMaterial() == b.getMaterial() && JSON.stringify(a.getData()) == JSON.stringify(b.getData());
 }
+exports.blocksEqual = blocksEqual;

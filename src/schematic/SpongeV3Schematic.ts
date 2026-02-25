@@ -26,9 +26,12 @@ export class SchematicV3 {
         this.pallet = new Map();
 
         this.dataMap = new Map<string, NBT>();
+        try {
+            for (const blockEntity of nbt.value.Schematic.value.Blocks.value.BlockEntities.value.value) {
+                this.dataMap.set(`${blockEntity.Pos.value}`, blockEntity.Data.value)
+            }
+        }catch (e){
 
-        for (const blockEntity of nbt.value.Schematic.value.Blocks.value.BlockEntities.value.value) {
-            this.dataMap.set(`${blockEntity.Pos.value}`, blockEntity.Data.value)
         }
 
 

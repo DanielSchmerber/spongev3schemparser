@@ -24,8 +24,12 @@ class SchematicV3 {
         this.nbt = nbt;
         this.pallet = new Map();
         this.dataMap = new Map();
-        for (const blockEntity of nbt.value.Schematic.value.Blocks.value.BlockEntities.value.value) {
-            this.dataMap.set(`${blockEntity.Pos.value}`, blockEntity.Data.value);
+        try {
+            for (const blockEntity of nbt.value.Schematic.value.Blocks.value.BlockEntities.value.value) {
+                this.dataMap.set(`${blockEntity.Pos.value}`, blockEntity.Data.value);
+            }
+        }
+        catch (e) {
         }
         let tempPallet = nbt.value.Schematic.value.Blocks.value.Palette.value;
         for (const temp in tempPallet) {
