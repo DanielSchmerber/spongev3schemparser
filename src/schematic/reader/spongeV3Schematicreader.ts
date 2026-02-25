@@ -1,9 +1,11 @@
 import {Schem, SchematicWrapper} from '../Schematic';
 import { SchematicV3 } from '../SpongeV3Schematic';
 import nbt from "prismarine-nbt"
+import { gunzipSync } from "zlib";
 
-export async function readSchematic(schem: Buffer) : Promise<SchematicWrapper>{
-    let parsed = (await nbt.parse(schem)).parsed;
+
+export function readSchematic(buffer: Buffer): SchematicWrapper {
+    const decompressed = gunzipSync(buffer);
+    const parsed = nbt.parseUncompressed(decompressed, "big");
     return new SchematicWrapper(new SchematicV3(parsed));
 }
-
