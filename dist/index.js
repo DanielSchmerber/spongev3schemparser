@@ -44,7 +44,9 @@ Object.defineProperty(exports, "SchematicWrapper", { enumerable: true, get: func
 const Schematic_2 = require("./schematic/Schematic");
 Object.defineProperty(exports, "BlockWrapper", { enumerable: true, get: function () { return Schematic_2.BlockWrapper; } });
 const fs = __importStar(require("node:fs"));
-function test() {
-    let schem = (0, spongeV3Schematicreader_1.readSchematic)(fs.readFileSync("Cringelig.schem"));
-    console.log(schem);
+async function test() {
+    let schem = await (0, spongeV3Schematicreader_1.readSchematic)(fs.readFileSync("../Cringelig.schem"));
+    let testBlock = [...schem.getBlocks()].find((x) => x.block.getData());
+    console.log(JSON.stringify(testBlock === null || testBlock === void 0 ? void 0 : testBlock.block.getSimpleData()));
 }
+test();

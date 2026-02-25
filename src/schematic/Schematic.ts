@@ -91,8 +91,8 @@ export let NOTHING: Block = {
     getMaterial():string{return "nothing"},
     getData():NBT | null{return null}
 }
-type ReadSchematicFn = (schem: Buffer) => Promise<SchematicWrapper>;
-type WriteSchematicFn = (schem: Schem) => Promise<Buffer>;
+type ReadSchematicFn = (schem: Buffer) => SchematicWrapper;
+type WriteSchematicFn = (schem: Schem) => Buffer;
 
 
 export function readSchematicFromBuf(buf : Buffer){
