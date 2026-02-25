@@ -1,38 +1,81 @@
 import varint from 'varint';
 import nbt, {NBT} from "prismarine-nbt";
 import {readSchematic} from "./reader/spongeV3Schematicreader";
-
-export class SchematicWrapper{
+export class SchematicWrapper implements Schem {
     private overrides: Map<string, Block>;
-    constructor(private schem : Schem){
-        this.overrides = new Map()
+    private width?: number;
+    private height?: number;
+    private length?: number;
+
+    constructor(private schem: Schem) {
+        this.overrides = new Map();
     }
 
-    getBlockAt(x:number,y:number,z:number){
-        return new BlockWrapper(this.overrides.get(`${x},${y},${z}`) ?? this.schem.getBlockAt(x,y,z))
+    // ---------- Size setters ----------
+
+    setWidth(width: number) {
+        this.width = width;
     }
 
-    setBlock(x: number,y:number,z:number,block:Block){
-        this.overrides.set(`${x},${y},${z}`,block)
+    setHeight(height: number) {
+        this.height = height;
     }
 
-    getWidth(){
-        return this.schem.getWidth()
+    setLength(length: number) {
+        this.length = length;
     }
-    getHeight(){
-        return this.schem.getHeight()
+
+    // ---------- Size getters ----------
+
+    getWidth() {
+        return this.width ?? this.schem.getWidth();
     }
-    getLength(){
-        return this.schem.getLength()
+
+    getHeight() {
+        return this.height ?? this.schem.getHeight();
     }
-    getDataVersion(){
-        return this.schem.getDataVersion()
+
+    getLength() {
+        return this.length ?? this.schem.getLength();
     }
-    getOffset(){
-        return this.schem.getOffset()
+
+    // ---------- Block handling ----------
+
+    getBlockAt(x: number, y: number, z: number) {
+        if (!this.isInsideBounds(x, y, z)) {
+            return NOTHING;
+        }
+
+        return this.overrides.get(`${x},${y},${z}`)
+            ?? this.schem.getBlockAt(x, y, z);
     }
-    getBlocks(){
-        return iterateBlocks(this.schem)
+
+    setBlock(x: number, y: number, z: number, block: Block) {
+        if (!this.isInsideBounds(x, y, z)) return;
+        this.overrides.set(`${x},${y},${z}`, block);
+    }
+
+    private isInsideBounds(x: number, y: number, z: number) {
+        return (
+            x >= 0 && y >= 0 && z >= 0 &&
+            x < this.getWidth() &&
+            y < this.getHeight() &&
+            z < this.getLength()
+        );
+    }
+
+    // ---------- Delegate ----------
+
+    getDataVersion() {
+        return this.schem.getDataVersion();
+    }
+
+    getOffset() {
+        return this.schem.getOffset();
+    }
+
+    getBlocks() {
+        return iterateBlocks(this);
     }
 }
 
