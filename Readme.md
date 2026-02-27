@@ -8,4 +8,4 @@ Example usage
 
     let block = schematic!.getBlockAt(0,0,0).getSimpleData()
 
-    await new SpongeV3SchematicWriter(schematic!).writeSchematic()
+    await new SpongeV3DiffSchematicWriter(schematic!).writeSchematic()

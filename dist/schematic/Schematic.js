@@ -9,27 +9,55 @@ exports.readSchematicFromBuf = readSchematicFromBuf;
 exports.blocksEqual = blocksEqual;
 const prismarine_nbt_1 = __importDefault(require("prismarine-nbt"));
 const spongeV3Schematicreader_1 = require("./reader/spongeV3Schematicreader");
+const node_util_1 = require("node:util");
 class SchematicWrapper {
     constructor(schem) {
         this.schem = schem;
         this.overrides = new Map();
     }
-    getBlockAt(x, y, z) {
-        var _a;
-        return new BlockWrapper((_a = this.overrides.get(`${x},${y},${z}`)) !== null && _a !== void 0 ? _a : this.schem.getBlockAt(x, y, z));
+    // ---------- Size setters ----------
+    setWidth(width) {
+        this.width = width;
     }
-    setBlock(x, y, z, block) {
-        this.overrides.set(`${x},${y},${z}`, block);
+    setHeight(height) {
+        this.height = height;
     }
+    setLength(length) {
+        this.length = length;
+    }
+    // ---------- Size getters ----------
     getWidth() {
-        return this.schem.getWidth();
+        var _a;
+        return (_a = this.width) !== null && _a !== void 0 ? _a : this.schem.getWidth();
     }
     getHeight() {
-        return this.schem.getHeight();
+        var _a;
+        return (_a = this.height) !== null && _a !== void 0 ? _a : this.schem.getHeight();
     }
     getLength() {
-        return this.schem.getLength();
+        var _a;
+        return (_a = this.length) !== null && _a !== void 0 ? _a : this.schem.getLength();
     }
+    // ---------- Block handling ----------
+    getBlockAt(x, y, z) {
+        var _a;
+        if (!this.isInsideBounds(x, y, z)) {
+            return exports.NOTHING;
+        }
+        return (_a = this.overrides.get(`${x},${y},${z}`)) !== null && _a !== void 0 ? _a : this.schem.getBlockAt(x, y, z);
+    }
+    setBlock(x, y, z, block) {
+        if (!this.isInsideBounds(x, y, z))
+            return;
+        this.overrides.set(`${x},${y},${z}`, block);
+    }
+    isInsideBounds(x, y, z) {
+        return (x >= 0 && y >= 0 && z >= 0 &&
+            x < this.getWidth() &&
+            y < this.getHeight() &&
+            z < this.getLength());
+    }
+    // ---------- Delegate ----------
     getDataVersion() {
         return this.schem.getDataVersion();
     }
@@ -37,7 +65,7 @@ class SchematicWrapper {
         return this.schem.getOffset();
     }
     getBlocks() {
-        return iterateBlocks(this.schem);
+        return iterateBlocks(this);
     }
 }
 exports.SchematicWrapper = SchematicWrapper;
@@ -50,6 +78,9 @@ class BlockWrapper {
     }
     getData() {
         return this.block.getData();
+    }
+    equals(other) {
+        return blocksEqual(this, other);
     }
     getSimpleData() {
         try {
@@ -91,5 +122,13 @@ function readSchematicFromBuf(buf) {
     }
 }
 function blocksEqual(a, b) {
-    return a.getMaterial() == b.getMaterial() && JSON.stringify(a.getData()) == JSON.stringify(b.getData());
+    if (a.getMaterial() !== b.getMaterial())
+        return false;
+    const dataA = a.getData();
+    const dataB = b.getData();
+    if (dataA == null && dataB == null)
+        return true;
+    if (dataA == null || dataB == null)
+        return false;
+    return (0, node_util_1.isDeepStrictEqual)(dataA, dataB);
 }

@@ -1,11 +1,15 @@
 import varint from 'varint';
 import nbt, {NBT} from "prismarine-nbt";
 import {readSchematic} from "./reader/spongeV3Schematicreader";
+import assert from "node:assert";
+import {isDeepStrictEqual} from "node:util";
+
+
 export class SchematicWrapper implements Schem {
     private overrides: Map<string, Block>;
-    private width?: number;
-    private height?: number;
-    private length?: number;
+    protected width?: number;
+    protected height?: number;
+    protected length?: number;
 
     constructor(private schem: Schem) {
         this.overrides = new Map();
@@ -91,6 +95,10 @@ export class BlockWrapper{
         return this.block.getData()
     }
 
+    equals(other:Block){
+        return blocksEqual(this,other)
+    }
+
     getSimpleData() {
         try{
             // @ts-ignore
@@ -151,6 +159,14 @@ export function readSchematicFromBuf(buf : Buffer){
 
 }
 
-export function blocksEqual(a:Block,b:Block){
-    return a.getMaterial() == b.getMaterial() && JSON.stringify(a.getData()) == JSON.stringify(b.getData())
+export function blocksEqual(a: Block, b: Block): boolean {
+    if (a.getMaterial() !== b.getMaterial()) return false
+
+    const dataA = a.getData()
+    const dataB = b.getData()
+
+    if (dataA == null && dataB == null) return true
+    if (dataA == null || dataB == null) return false
+
+    return isDeepStrictEqual(dataA, dataB)
 }
